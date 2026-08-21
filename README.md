@@ -1,4 +1,4 @@
-# QA Bench — Frontend (React + Vite)
+# QA TestGen — Frontend (React + Vite)
 
 Frontend do gerador de casos de teste. Este projeto **não guarda nenhuma chave de
 API** — ele só chama `POST /api/gerar-casos` e espera que um backend (a ser
