@@ -1,100 +1,178 @@
-# QA TestGen — Frontend (React + Vite)
+# QA TestGen
 
-Frontend do gerador de casos de teste. Este projeto **não guarda nenhuma chave de
-API** — ele só chama `POST /api/gerar-casos` e espera que um backend (a ser
-construído) processe a chamada para a IA e devolva os casos de teste.
+Aplicação frontend em React + Vite para gerar casos de teste a partir de um requisito ou funcionalidade informada pelo usuário. O fluxo atual é:
 
-## Estrutura
+- o usuário define o provedor e o modelo de IA;
+- edita o prompt base do QA;
+- descreve o requisito funcional;
+- o frontend envia os dados para o backend;
+- o backend retorna os casos de teste em JSON;
+- o usuário pode visualizar, exportar para Excel e Word ou imprimir em PDF.
 
+Este projeto não guarda chaves de IA no frontend. A lógica de autenticação e acesso ao modelo fica no backend.
+
+## Funcionalidades
+
+- seleção de provedor: Gemini ou Groq;
+- seleção de modelo por provedor;
+- edição do prompt fixo que orienta a geração;
+- entrada do requisito funcional em texto livre;
+- quantidade aproximada de casos de teste a gerar;
+- renderização dos casos em tabela;
+- exportação para Excel (.xlsx);
+- exportação para relatório Word (.doc);
+- impressão em PDF via navegador;
+- tratamento de erros e status de carregamento.
+
+## Stack
+
+- React 18
+- Vite 5
+- xlsx
+- CSS puro
+
+## Estrutura do projeto
+
+```bash
+.
+├── index.html
+├── package.json
+├── vite.config.js
+├── README.md
+├── src/
+│   ├── App.jsx
+│   ├── index.css
+│   ├── main.jsx
+│   ├── api/
+│   │   └── generateTestCases.js
+│   ├── components/
+│   │   ├── ConfigPanel.jsx
+│   │   ├── Letterhead.jsx
+│   │   ├── RequirementForm.jsx
+│   │   ├── ResultsPanel.jsx
+│   │   ├── ResultsTable.jsx
+│   │   └── StatusMessage.jsx
+│   ├── hooks/
+│   │   └── useTestCaseGenerator.js
+│   └── utils/
+│       ├── dateStamp.js
+│       ├── exportDoc.js
+│       └── exportExcel.js
+└── public/
 ```
-src/
-├── main.jsx                       # entry point
-├── App.jsx                        # componente raiz
-├── index.css                      # design tokens e estilos globais
-├── api/
-│   └── generateTestCases.js       # cliente HTTP para o backend
-├── hooks/
-│   └── useTestCaseGenerator.js    # estado: prompt fixo, modelo, casos, status
-├── components/
-│   ├── Letterhead.jsx
-│   ├── ConfigPanel.jsx            # modelo + prompt fixo (editável)
-│   ├── RequirementForm.jsx        # input do requisito + botão gerar
-│   ├── StatusMessage.jsx
-│   ├── ResultsPanel.jsx           # botões de exportação + tabela
-│   └── ResultsTable.jsx
-└── utils/
-    ├── exportExcel.js             # exporta .xlsx (biblioteca xlsx)
-    ├── exportDoc.js                # exporta .doc (relatório Word)
-    └── dateStamp.js
-```
 
-## Como rodar
+## Como rodar localmente
+
+1. Instale as dependências:
 
 ```bash
 npm install
+```
+
+2. Inicie a aplicação:
+
+```bash
 npm run dev
 ```
 
-Abre em `http://localhost:5173`. Sem um backend rodando, o botão "Gerar casos de
-teste" vai mostrar erro de conexão — isso é esperado até você montar o backend.
+3. Acesse no navegador:
 
-## Contrato que o backend precisa seguir
-
+```bash
+http://localhost:5173
 ```
-POST /api/gerar-casos
-Content-Type: application/json
 
-Body enviado pelo frontend:
+> O frontend depende de um backend com a rota de geração implementada para funcionar corretamente.
+
+## Configuração da API
+
+O cliente do frontend envia a requisição para:
+
+```http
+POST /api/generate-test-cases
+```
+
+O endereço base pode ser definido via variável de ambiente do Vite:
+
+```env
+VITE_API_URL=http://localhost:8787
+```
+
+Se a variável não for definida, o app usa a URL relativa do mesmo host.
+
+## Contrato da API esperado pelo frontend
+
+### Requisição
+
+```json
 {
-  "model": "gemini-2.5-flash",
-  "systemPrompt": "...",   // prompt fixo (instrução da IA)
-  "userPrompt": "..."      // requisito do usuário + quantidade pedida
+  "provider": "gemini",
+  "model": "gemini-3.6-flash",
+  "systemPrompt": "Você é um analista de QA sênior...",
+  "userPrompt": "Requisito/funcionalidade a testar:\n...\n\nGere aproximadamente 10 casos de teste..."
 }
+```
 
-Resposta esperada (200):
+### Resposta bem-sucedida
+
+```json
 {
   "casos_de_teste": [
     {
       "id": "TC-001",
-      "titulo": "...",
-      "modulo": "...",
+      "titulo": "Validar login com credenciais corretas",
+      "modulo": "Autenticação",
       "tipo": "Funcional",
       "prioridade": "Alta",
-      "pre_condicoes": "...",
-      "passos": ["...", "..."],
-      "dados_teste": "...",
-      "resultado_esperado": "..."
+      "pre_condicoes": "Usuário cadastrado e página de login acessível.",
+      "passos": [
+        "Acessar a página de login",
+        "Informar e-mail e senha válidos",
+        "Clicar em Entrar"
+      ],
+      "dados_teste": "E-mail: usuario@teste.com | Senha: Senha@123",
+      "resultado_esperado": "O usuário é autenticado e redirecionado para a área inicial."
     }
   ]
 }
-
-Resposta de erro (4xx/5xx):
-{ "error": "mensagem legível para mostrar ao usuário" }
 ```
 
-O backend é quem deve guardar a chave da IA (variável de ambiente, nunca no
-frontend) e fazer a chamada real para o provedor (Gemini, Groq, etc.).
+### Resposta de erro
 
-## Apontando para o backend
-
-Por padrão o frontend chama `/api/gerar-casos` (caminho relativo). Duas formas
-de conectar ao backend quando ele existir:
-
-**Opção A — proxy do Vite (já configurado em `vite.config.js`)**
-Se o backend rodar em `http://localhost:8787`, o Vite já redireciona `/api/*`
-para lá automaticamente durante `npm run dev`. Só ajustar a porta se for
-diferente.
-
-**Opção B — variável de ambiente**
-Crie um arquivo `.env` com:
+```json
+{
+  "error": "Mensagem legível para o usuário"
+}
 ```
-VITE_API_URL=http://localhost:8787
+
+## Observações importantes
+
+- O frontend não chama a IA diretamente.
+- A autenticação da API da IA deve ocorrer no backend.
+- O prompt fixo é enviado em toda geração e pode ser editado na interface.
+- A estrutura de casos esperada inclui os campos: id, titulo, modulo, tipo, prioridade, pre_condicoes, passos, dados_teste e resultado_esperado.
+
+## Scripts disponíveis
+
+```bash
+npm run dev       # inicia o ambiente de desenvolvimento
+dnpm run build    # gera build de produção
+npm run preview   # visualiza a build localmente
 ```
-e o frontend vai chamar essa URL diretamente (útil se o backend estiver em outro
-domínio/porta, especialmente em produção).
 
-## Próximo passo
+## Fluxo principal da aplicação
 
-Quando você montar o backend, ele só precisa implementar essa única rota. Posso
-ajudar a construir esse backend (Node/Express, por exemplo) quando você estiver
-pronto — é só chamar.
+```text
+Usuário → descreve requisito
+   ↓
+Frontend envia provider/model/prompt/requisito
+   ↓
+Backend chama provedor de IA
+   ↓
+Retorna casos de teste em JSON
+   ↓
+Frontend exibe e exporta resultados
+```
+
+## Próximo passo recomendado
+
+Implementar o backend responsável por receber a requisição em /api/generate-test-cases, chamar o provedor escolhido (Gemini, Groq ou outro) e devolver o JSON no formato esperado pelo frontend.
