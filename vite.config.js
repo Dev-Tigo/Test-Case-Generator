@@ -9,7 +9,7 @@ export default defineConfig({
       // Enquanto você desenvolve o backend, isso encaminha /api/* para o
       // servidor local dele (ajuste a porta quando definir o backend).
       '/api': {
-        target: 'http://localhost:8787',
+        target: 'http://localhost:5021',
         changeOrigin: true,
       },
     },
