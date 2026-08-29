@@ -8,6 +8,8 @@ export default function App() {
   const {
     systemPrompt,
     setSystemPrompt,
+    provider,
+    setProvider,
     model,
     setModel,
     testCases,
@@ -19,6 +21,8 @@ export default function App() {
     <div className="sheet">
       <Letterhead />
       <ConfigPanel
+        provider={provider}
+        setProvider={setProvider}
         model={model}
         setModel={setModel}
         systemPrompt={systemPrompt}

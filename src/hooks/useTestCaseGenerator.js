@@ -31,6 +31,7 @@ Regras:
 
 export function useTestCaseGenerator() {
   const [systemPrompt, setSystemPrompt] = useState(DEFAULT_SYSTEM_PROMPT);
+  const [provider, setProvider] = useState('gemini');
   const [model, setModel] = useState('gemini-3.6-flash');
   const [testCases, setTestCases] = useState([]);
   const [status, setStatus] = useState({ message: '', error: false, loading: false });
@@ -47,19 +48,21 @@ export function useTestCaseGenerator() {
       const userPrompt = `Requisito/funcionalidade a testar:\n"""\n${requirementText}\n"""\n\nGere aproximadamente ${quantity} casos de teste cobrindo esse requisito.`;
 
       try {
-        const casos = await generateTestCases({ model, systemPrompt, userPrompt });
+        const casos = await generateTestCases({ provider, model, systemPrompt, userPrompt });
         setTestCases(casos);
         setStatus({ message: `${casos.length} casos de teste gerados com sucesso.`, error: false, loading: false });
       } catch (err) {
         setStatus({ message: 'Falha ao gerar: ' + err.message, error: true, loading: false });
       }
     },
-    [model, systemPrompt]
+    [provider, model, systemPrompt]
   );
 
   return {
     systemPrompt,
     setSystemPrompt,
+    provider,
+    setProvider,
     model,
     setModel,
     testCases,

@@ -1,21 +1,21 @@
-// Chama o backend, que deve expor POST /api/gerar-casos e guardar a chave
-// da IA (ex: Gemini) do lado do servidor — nunca no frontend.
+// Chama o backend, que deve expor POST /api/generate-test-cases e guardar a chave
+// da IA (Gemini, Groq, etc.) do lado do servidor — nunca no frontend.
 //
 // Contrato esperado do backend:
-//   POST /api/gerar-casos
-//   body: { model, systemPrompt, userPrompt }
+//   POST /api/generate-test-cases
+//   body: { provider, model, systemPrompt, userPrompt }
 //   resposta 200: { casos_de_teste: [ {...}, {...} ] }
 //   resposta erro: { error: "mensagem legível" }
 
 const API_BASE = import.meta.env.VITE_API_URL || '';
 
-export async function generateTestCases({ model, systemPrompt, userPrompt }) {
+export async function generateTestCases({ provider, model, systemPrompt, userPrompt }) {
   let res;
   try {
     res = await fetch(`${API_BASE}/api/generate-test-cases`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, systemPrompt, userPrompt }),
+      body: JSON.stringify({ provider, model, systemPrompt, userPrompt }),
     });
   } catch (networkErr) {
     throw new Error(

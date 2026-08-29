@@ -1,4 +1,15 @@
-export default function ConfigPanel({ model, setModel, systemPrompt, setSystemPrompt }) {
+export default function ConfigPanel({ provider, setProvider, model, setModel, systemPrompt, setSystemPrompt }) {
+  const modelOptions = {
+    gemini: ['gemini-3.6-flash', 'gemini-3.7-flash'],
+    groq: ['openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'qwen/qwen3.6-27b'],
+  };
+
+  const handleProviderChange = (e) => {
+    const newProvider = e.target.value;
+    setProvider(newProvider);
+    setModel(modelOptions[newProvider][0]);
+  };
+
   return (
     <div className="panel panel-config">
       <div className="panel-head">
@@ -7,11 +18,20 @@ export default function ConfigPanel({ model, setModel, systemPrompt, setSystemPr
       </div>
 
       <div className="row">
+        <div className="field" style={{ maxWidth: 180 }}>
+          <label htmlFor="provider">Provedor</label>
+          <select id="provider" value={provider} onChange={handleProviderChange}>
+            <option value="gemini">Gemini</option>
+            <option value="groq">Groq</option>
+          </select>
+        </div>
+
         <div className="field" style={{ maxWidth: 240 }}>
           <label htmlFor="model">Modelo</label>
           <select id="model" value={model} onChange={(e) => setModel(e.target.value)}>
-            <option value="gemini-3.6-flash">gemini-3.6-flash</option>
-            <option value="gemini-3.7-flash">gemini-3.7-flash</option>
+            {modelOptions[provider].map((m) => (
+              <option key={m} value={m}>{m}</option>
+            ))}
           </select>
           <div className="hint">
             O nome do modelo é só repassado ao backend — troque aqui se seu backend
