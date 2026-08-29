@@ -24,8 +24,8 @@ export default function RequirementForm({ onGenerate, status }) {
         />
       </div>
 
-      <div className="row" style={{ alignItems: 'flex-end' }}>
-        <div className="field" style={{ maxWidth: 220 }}>
+      <div className="selector-row">
+        <div className="field quantity-field">
           <label htmlFor="qty">Quantidade aproximada</label>
           <select id="qty" value={qty} onChange={(e) => setQty(e.target.value)}>
             <option value="6">6 casos</option>
@@ -34,15 +34,18 @@ export default function RequirementForm({ onGenerate, status }) {
             <option value="20">20 casos</option>
           </select>
         </div>
-        <div className="field" style={{ flex: 2 }}>
+
+        <div className="field actions-field">
           <div className="actions">
             <button className="btn-primary" onClick={handleSubmit} disabled={status.loading}>
               Gerar casos de teste
             </button>
-            <StatusMessage status={status} />
+            {!status.error && status.message && <StatusMessage status={status} />}
           </div>
         </div>
       </div>
+
+      {status.error && <div className="actions-error-wrap"><StatusMessage status={status} /></div>}
     </div>
   );
 }

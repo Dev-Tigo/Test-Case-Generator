@@ -16,41 +16,43 @@ export default function ResultsTable({ testCases }) {
   }
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Título</th>
-          <th>Tipo</th>
-          <th>Prioridade</th>
-          <th>Pré-condições</th>
-          <th>Passos</th>
-          <th>Dados</th>
-          <th>Resultado esperado</th>
-        </tr>
-      </thead>
-      <tbody>
-        {testCases.map((tc, idx) => (
-          <tr key={tc.id || idx}>
-            <td className="id-cell">{tc.id}</td>
-            <td>
-              <strong>{tc.titulo}</strong>
-              <br />
-              <span style={{ color: 'var(--ink-soft)', fontSize: 11.5 }}>{tc.modulo}</span>
-            </td>
-            <td>{tc.tipo}</td>
-            <td><span className={`prio ${prioClass(tc.prioridade)}`}>{tc.prioridade}</span></td>
-            <td>{tc.pre_condicoes}</td>
-            <td>
-              <ol className="steps-list">
-                {(tc.passos || []).map((p, i) => <li key={i}>{p}</li>)}
-              </ol>
-            </td>
-            <td>{tc.dados_teste}</td>
-            <td>{tc.resultado_esperado}</td>
+    <div className="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Tipo</th>
+            <th>Prioridade</th>
+            <th>Pré-condições</th>
+            <th>Passos</th>
+            <th>Dados</th>
+            <th>Resultado esperado</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {testCases.map((tc, idx) => (
+            <tr key={tc.id || idx}>
+              <td className="id-cell">{tc.id}</td>
+              <td>
+                <strong>{tc.titulo}</strong>
+                <br />
+                <span style={{ color: 'var(--ink-soft)', fontSize: 11.5 }}>{tc.modulo}</span>
+              </td>
+              <td>{tc.tipo}</td>
+              <td><span className={`prio ${prioClass(tc.prioridade)}`}>{tc.prioridade}</span></td>
+              <td>{tc.pre_condicoes}</td>
+              <td>
+                <ol className="steps-list">
+                  {(tc.passos || []).map((p, i) => <li key={i}>{p}</li>)}
+                </ol>
+              </td>
+              <td>{tc.dados_teste}</td>
+              <td>{tc.resultado_esperado}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

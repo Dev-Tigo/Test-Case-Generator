@@ -10,8 +10,8 @@ export default function ConfigPanel({ model, setModel, systemPrompt, setSystemPr
         <div className="field" style={{ maxWidth: 240 }}>
           <label htmlFor="model">Modelo</label>
           <select id="model" value={model} onChange={(e) => setModel(e.target.value)}>
-            <option value="gemini-2.5-flash">gemini-2.5-flash</option>
-            <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+            <option value="gemini-3.6-flash">gemini-3.6-flash</option>
+            <option value="gemini-3.7-flash">gemini-3.7-flash</option>
           </select>
           <div className="hint">
             O nome do modelo é só repassado ao backend — troque aqui se seu backend

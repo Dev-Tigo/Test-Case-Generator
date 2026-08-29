@@ -31,7 +31,7 @@ Regras:
 
 export function useTestCaseGenerator() {
   const [systemPrompt, setSystemPrompt] = useState(DEFAULT_SYSTEM_PROMPT);
-  const [model, setModel] = useState('gemini-2.5-flash');
+  const [model, setModel] = useState('gemini-3.6-flash');
   const [testCases, setTestCases] = useState([]);
   const [status, setStatus] = useState({ message: '', error: false, loading: false });
 
