@@ -12,7 +12,7 @@ const API_BASE = import.meta.env.VITE_API_URL || '';
 export async function generateTestCases({ model, systemPrompt, userPrompt }) {
   let res;
   try {
-    res = await fetch(`${API_BASE}/api/gerar-casos`, {
+    res = await fetch(`${API_BASE}/api/generate-test-cases`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model, systemPrompt, userPrompt }),
