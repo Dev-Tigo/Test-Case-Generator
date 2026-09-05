@@ -267,7 +267,17 @@ button:active { transform: translateY(1px); }
   -webkit-overflow-scrolling: touch;
 }
 
-table { width: 100%; min-width: 1200px; border-collapse: collapse; font-size: 13px; }
+table { width: 100%; min-width: 3000px; border-collapse: collapse; font-size: 13px; }
+
+thead th:nth-child(1), tbody td:nth-child(1) { width: 70px; }   /* ID */
+thead th:nth-child(2), tbody td:nth-child(2) { width: 320px; }  /* Título */
+thead th:nth-child(3), tbody td:nth-child(3) { width: 100px; }  /* Tipo */
+thead th:nth-child(4), tbody td:nth-child(4) { width: 110px; }  /* Prioridade */
+thead th:nth-child(5), tbody td:nth-child(5) { width: 350px; }  /* Pré-condições */
+thead th:nth-child(6), tbody td:nth-child(6) { width: 380px; }  /* Passos */
+thead th:nth-child(7), tbody td:nth-child(7) { width: 320px; }  /* Dados */
+thead th:nth-child(8), tbody td:nth-child(8) { width: 350px; }  /* Resultado esperado */
+
 thead th {
   text-align: left;
   font-family: 'IBM Plex Mono', monospace;
@@ -288,7 +298,28 @@ thead th:nth-child(8) {
   min-width: 210px;
 }
 
-tbody td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.5; }
+table input[type="text"],
+table textarea,
+table select {
+  padding: 6px 8px;
+  font-size: 12.5px;
+  min-width: 140px;
+}
+table textarea {
+  resize: vertical;
+  min-height: 200px;
+}
+.prio-select {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  min-width: 90px;
+}
+.prio-select.prio-alta { background: rgba(194, 59, 34, .12); color: var(--stamp-dark); }
+.prio-select.prio-media { background: rgba(185, 121, 26, .14); color: var(--amber); }
+.prio-select.prio-baixa { background: rgba(31, 138, 76, .12); color: var(--pass); }
+
+tbody td { padding: 14px 12px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.6; }
 tbody tr:hover { background: var(--paper-alt); }
 .id-cell { font-family: 'IBM Plex Mono', monospace; font-weight: 600; white-space: nowrap; }
 .steps-list { margin: 0; padding-left: 16px; }
@@ -301,7 +332,30 @@ tbody tr:hover { background: var(--paper-alt); }
 
 footer { text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-soft); margin-top: 36px; letter-spacing: .04em; }
 
+.print-only { display: none; }
+
 @media print {
-  .panel-config, .panel-input, footer, .actions { display: none !important; }
+  .panel-config, .panel-input, footer, .actions, .table-wrap, .results-head {
+    display: none !important;
+  }
+  .print-only { display: block !important; }
   body { background: white; }
+
+  .print-report h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 22px;
+    margin-bottom: 2px;
+  }
+  .print-meta { color: var(--ink-soft); font-size: 11px; margin-bottom: 20px; }
+  .print-case { margin-bottom: 10px; page-break-inside: avoid; }
+  .print-case + .print-case { border-top: 1px dashed var(--line); padding-top: 14px; }
+  .print-case h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    color: var(--stamp);
+    margin: 20px 0 4px;
+  }
+  .print-case-meta { font-size: 11px; color: var(--ink-soft); margin: 2px 0 10px; }
+  .print-case p { margin: 4px 0; font-size: 12px; line-height: 1.5; }
+  .print-case ol { margin: 4px 0 10px; padding-left: 20px; font-size: 12px; }
 }

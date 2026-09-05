@@ -9,18 +9,23 @@ function escapeHtml(str) {
 export function exportToDoc(testCases) {
   if (!testCases.length) return;
 
-  const rowsHtml = testCases.map((tc) => `
-    <tr>
-      <td>${escapeHtml(tc.id || '')}</td>
-      <td>${escapeHtml(tc.titulo || '')}</td>
-      <td>${escapeHtml(tc.modulo || '')}</td>
-      <td>${escapeHtml(tc.tipo || '')}</td>
-      <td>${escapeHtml(tc.prioridade || '')}</td>
-      <td>${escapeHtml(tc.pre_condicoes || '')}</td>
-      <td>${(tc.passos || []).map((p, i) => `${i + 1}. ${escapeHtml(p)}`).join('<br>')}</td>
-      <td>${escapeHtml(tc.dados_teste || '')}</td>
-      <td>${escapeHtml(tc.resultado_esperado || '')}</td>
-    </tr>`).join('');
+  const blocksHtml = testCases.map((tc) => `
+    <div class="case-block">
+      <h2>${escapeHtml(tc.id || '')} — ${escapeHtml(tc.titulo || '')}</h2>
+      <p class="case-meta">
+        <strong>Módulo:</strong> ${escapeHtml(tc.modulo || '—')} &nbsp;|&nbsp;
+        <strong>Tipo:</strong> ${escapeHtml(tc.tipo || '—')} &nbsp;|&nbsp;
+        <strong>Prioridade:</strong> ${escapeHtml(tc.prioridade || '—')}
+      </p>
+      <p><strong>Pré-condições:</strong><br>${escapeHtml(tc.pre_condicoes || '—')}</p>
+      <p><strong>Passos:</strong></p>
+      <ol>
+        ${(tc.passos || []).map((p) => `<li>${escapeHtml(p)}</li>`).join('')}
+      </ol>
+      <p><strong>Dados de Teste:</strong><br>${escapeHtml(tc.dados_teste || '—')}</p>
+      <p><strong>Resultado Esperado:</strong><br>${escapeHtml(tc.resultado_esperado || '—')}</p>
+    </div>
+    <hr class="case-divider">`).join('');
 
   const html = `
   <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
@@ -28,18 +33,17 @@ export function exportToDoc(testCases) {
   <style>
     body{font-family:Calibri, Arial, sans-serif; font-size:11pt; color:#17233D;}
     h1{font-size:20pt; margin-bottom:2pt;}
+    h2{font-size:14pt; color:#C23B22; margin:22pt 0 4pt;}
     .meta{color:#555; font-size:9.5pt; margin-bottom:18pt;}
-    table{border-collapse:collapse; width:100%;}
-    th,td{border:1px solid #999; padding:6px 8px; font-size:9.5pt; vertical-align:top; text-align:left;}
-    th{background:#E7E9E0;}
+    .case-meta{font-size:9.5pt; color:#3C4A66; margin:2pt 0 10pt;}
+    ol{margin:4pt 0 10pt; padding-left:20pt;}
+    p{margin:4pt 0;}
+    .case-divider{border:none; border-top:1px dashed #C7CBBE; margin:18pt 0;}
   </style></head>
   <body>
     <h1>Relatório de Casos de Teste</h1>
     <p class="meta">Gerado em ${new Date().toLocaleString('pt-BR')} · ${testCases.length} casos de teste</p>
-    <table>
-      <tr><th>ID</th><th>Título</th><th>Módulo</th><th>Tipo</th><th>Prioridade</th><th>Pré-condições</th><th>Passos</th><th>Dados</th><th>Resultado Esperado</th></tr>
-      ${rowsHtml}
-    </table>
+    ${blocksHtml}
   </body></html>`;
 
   const blob = new Blob(['\ufeff', html], { type: 'application/msword' });

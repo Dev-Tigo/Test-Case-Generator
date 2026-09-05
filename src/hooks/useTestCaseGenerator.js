@@ -58,6 +58,12 @@ export function useTestCaseGenerator() {
     [provider, model, systemPrompt]
   );
 
+  const updateTestCase = useCallback((index, field, value) => {
+    setTestCases((prev) =>
+      prev.map((tc, i) => (i === index ? { ...tc, [field]: value } : tc))
+    );
+  }, []);
+
   return {
     systemPrompt,
     setSystemPrompt,
@@ -68,5 +74,6 @@ export function useTestCaseGenerator() {
     testCases,
     status,
     generate,
+    updateTestCase,
   };
 }

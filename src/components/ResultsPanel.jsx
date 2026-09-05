@@ -1,8 +1,9 @@
 import ResultsTable from './ResultsTable.jsx';
+import PrintReport from './PrintReport.jsx';
 import { exportToExcel } from '../utils/exportExcel.js';
 import { exportToDoc } from '../utils/exportDoc.js';
 
-export default function ResultsPanel({ testCases }) {
+export default function ResultsPanel({ testCases, onUpdateTestCase }) {
   return (
     <div className="panel">
       <div className="results-head">
@@ -26,7 +27,8 @@ export default function ResultsPanel({ testCases }) {
         </div>
       )}
 
-      <ResultsTable testCases={testCases} />
+      <ResultsTable testCases={testCases} onUpdateTestCase={onUpdateTestCase} />
+      <PrintReport testCases={testCases} />
     </div>
   );
 }

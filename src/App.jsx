@@ -15,6 +15,7 @@ export default function App() {
     testCases,
     status,
     generate,
+    updateTestCase,
   } = useTestCaseGenerator();
 
   return (
@@ -29,7 +30,7 @@ export default function App() {
         setSystemPrompt={setSystemPrompt}
       />
       <RequirementForm onGenerate={generate} status={status} />
-      <ResultsPanel testCases={testCases} />
+      <ResultsPanel testCases={testCases} onUpdateTestCase={updateTestCase} />
       <footer>frontend em react · a chave da ia fica só no backend</footer>
     </div>
   );
